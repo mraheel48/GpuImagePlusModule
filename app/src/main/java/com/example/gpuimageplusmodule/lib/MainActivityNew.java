@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+
 import com.example.gpuimageplusmodule.R;
+
 import org.wysaid.myUtils.MsgUtil;
 
 public class MainActivityNew extends AppCompatActivity {
@@ -196,7 +198,7 @@ public class MainActivityNew extends AppCompatActivity {
             }
 
             try {
-                if (cls != null){
+                if (cls != null) {
                     startActivity(new Intent(MainActivityNew.this, cls));
                 }
             } catch (Exception e) {

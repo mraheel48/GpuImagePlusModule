@@ -21,8 +21,8 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         mainBinding.intiLib.setOnClickListener {
 
             if (EasyPermissions.hasPermissions(this@MainActivity, *Utils.cameraPermissionPass)) {
-                Log.d("myPermission", "hasPermissions allow")
                 openNewScreen()
+                Log.d("myPermission", "hasPermissions allow")
             } else {
                 EasyPermissions.requestPermissions(
                     this@MainActivity, "Please allow permissions to proceed further",

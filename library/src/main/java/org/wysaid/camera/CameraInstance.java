@@ -4,11 +4,11 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.os.Build;
 import android.util.Log;
 
-import org.wysaid.common.Common;
+import androidx.camera.core.CameraX;
 
+import org.wysaid.common.Common;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +17,7 @@ import java.util.List;
 
 // Camera 仅适用单例
 public class CameraInstance {
+
     public static final String LOG_TAG = Common.LOG_TAG;
 
     private static final String ASSERT_MSG = "检测到CameraDevice 为 null! 请检查";
@@ -55,6 +56,7 @@ public class CameraInstance {
 
     public int previewWidth() { return mPreviewWidth; }
     public int previewHeight() { return mPreviewHeight; }
+
     public int pictureWidth() { return mPictureWidth; }
     public int pictureHeight() { return mPictureHeight; }
 
@@ -80,18 +82,15 @@ public class CameraInstance {
 
         try
         {
-            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO)
-            {
-                int numberOfCameras = Camera.getNumberOfCameras();
+            int numberOfCameras = Camera.getNumberOfCameras();
 
-                Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-                for (int i = 0; i < numberOfCameras; i++) {
-                    Camera.getCameraInfo(i, cameraInfo);
-                    if (cameraInfo.facing == facing) {
-                        mDefaultCameraID = i;
-                        mFacing = facing;
-                        break;
-                    }
+            Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+            for (int i = 0; i < numberOfCameras; i++) {
+                Camera.getCameraInfo(i, cameraInfo);
+                if (cameraInfo.facing == facing) {
+                    mDefaultCameraID = i;
+                    mFacing = facing;
+                    break;
                 }
             }
             stopPreview();
