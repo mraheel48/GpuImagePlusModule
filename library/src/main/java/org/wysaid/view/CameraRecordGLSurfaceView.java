@@ -5,12 +5,16 @@ package org.wysaid.view;
  */
 
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.util.AttributeSet;
 import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -23,6 +27,7 @@ public class CameraRecordGLSurfaceView extends CameraGLSurfaceViewWithTexture {
 
     public CameraRecordGLSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.mContext = context;
     }
 
     private boolean mShouldRecord = false;
@@ -35,6 +40,7 @@ public class CameraRecordGLSurfaceView extends CameraGLSurfaceViewWithTexture {
 
     private AudioRecordRunnable mAudioRecordRunnable;
     private Thread mAudioThread;
+    private Context mContext;
 
     public interface StartRecordingCallback {
         void startRecordingOver(boolean success);
@@ -168,8 +174,14 @@ public class CameraRecordGLSurfaceView extends CameraGLSurfaceViewWithTexture {
                 bufferSize = AudioRecord.getMinBufferSize(sampleRate,
                         AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
                 Log.i(LOG_TAG, "audio min buffer size: " + bufferSize);
-                audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate,
-                        AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize);
+
+                if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                    audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate,
+                            AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize);
+                } else {
+                    return;
+                }
+
 //                audioData = new short[bufferSize];
                 audioBufferRef = ByteBuffer.allocateDirect(bufferSize * 2).order(ByteOrder.nativeOrder());
                 audioBuffer = audioBufferRef.asShortBuffer();
